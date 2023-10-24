@@ -1,6 +1,7 @@
 ﻿using AventStack.ExtentReports.Gherkin.Model;
 using AventStack.ExtentReports.Reporter;
 using AventStack.ExtentReports;
+using AventStack.ExtentReports.Reporter.Config;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
@@ -14,6 +15,7 @@ using System.Threading.Tasks;
 using WebDriverManager;
 using WebDriverManager.DriverConfigs.Impl;
 using TechTalk.SpecFlow;
+using System.Collections.Concurrent;
 
 namespace SpecFlow1.Hooks
 {
@@ -21,29 +23,45 @@ namespace SpecFlow1.Hooks
     public sealed class Hooks1
     {
         private DriverHelper _driverHelper;
-        //Global Variable for Extent report
-        private static ExtentTest featureName;
-        private static ExtentTest scenario;
-        private static ExtentReports extent;
+
+        private static ExtentReports _extentReports;
+        [ThreadStatic]
+        private static ExtentTest _feature;
+        [ThreadStatic]
+        private static ExtentTest _scenario;
+
+        public static String dir = AppDomain.CurrentDomain.BaseDirectory;
+        public static String testResultPath = dir.Replace("bin\\Debug\\net6.0", "YugTestResults");
+        private static readonly string base64ImageType = "base64";
+        static string configReportPath = @$"D:\yug\ExtentReport.html";
+
         public Hooks1(DriverHelper driverHelper) => _driverHelper = driverHelper;
+
+        public static ConcurrentDictionary<string, ExtentTest> FeatureDictionary = new ConcurrentDictionary<string, ExtentTest>();
 
         [BeforeTestRun]
         public static void InitializeReport()
         {
-            //Initialize Extent report before test starts
-            var htmlReporter = new ExtentJsonFormatter(@"C:\yug\ExtentReport.html");
-            extent = new ExtentReports();
+            //var htmlReporter = new ExtentSparkReporter(testResultPath);
+            var htmlReporter = new ExtentSparkReporter(configReportPath);
+            htmlReporter.Config.ReportName = "Automation Test Report";
+            htmlReporter.Config.DocumentTitle = "Automation Test Report";
+            htmlReporter.Config.Theme = Theme.Dark;
+
+            _extentReports = new ExtentReports();
+            _extentReports.AttachReporter(htmlReporter);
+                       
         }
 
         [BeforeFeature]
         public static void BeforeFeature(FeatureContext featureContext)
         {
-            //Create dynamic feature name
-            featureName = extent.CreateTest<Feature>(featureContext.FeatureInfo.Title);
+            _feature = _extentReports.CreateTest<Feature>(featureContext.FeatureInfo.Title);
+            FeatureDictionary.TryAdd(featureContext.FeatureInfo.Title, _feature);
         }
 
         [BeforeScenario]
-        public void InitializeBrowser()
+        public void InitializeBrowser(FeatureContext featureContext, ScenarioContext scenarioContext)
         {
             OpenQA.Selenium.Chrome.ChromeOptions options = new OpenQA.Selenium.Chrome.ChromeOptions();
             //options.AddArgument("--headless");
@@ -53,11 +71,23 @@ namespace SpecFlow1.Hooks
             //Using TestProject OpenSDK replacing the existing WebDriverManager
             //Note: Here the Token is taken from the .runsettings file
             //_driverHelper.Driver = new FirefoxDriver();
+            string InBSName = featureContext.FeatureInfo.Title;
+            if (FeatureDictionary.ContainsKey(InBSName))
+            {
+                _scenario = FeatureDictionary[InBSName].CreateNode<Scenario>(scenarioContext.ScenarioInfo.Title);
+            }
         }
 
         [AfterScenario]
-        public void AfterScenario()
+        public void AfterScenario(ScenarioContext scenarioContext)
         {
+            string resultOfImplementation = scenarioContext.ScenarioExecutionStatus.ToString();
+
+            //Pending Status
+            if (resultOfImplementation == "UndefinedStep")
+            {
+                // Log.StepNotDefined();
+            }
             _driverHelper.Driver.Quit();
         }
 
@@ -65,53 +95,66 @@ namespace SpecFlow1.Hooks
         public static void TearDownReport()
         {
             //Flush report once test completes
-            extent.Flush();
+            _extentReports.Flush();
         }
 
-        /*      [AfterStep]
-              public void InsertReportingSteps()
-              {
+        [AfterStep]
+        public void InsertReportingSteps(ScenarioContext scenarioContext)
+        {
+            string stepType = scenarioContext.StepContext.StepInfo.StepDefinitionType.ToString();
+            string stepInfo = scenarioContext.StepContext.StepInfo.Text;
 
-                  var stepType = ScenarioStepContext.Current.StepInfo.StepDefinitionType.ToString();
 
-                  PropertyInfo pInfo = typeof(ScenarioContext).GetProperty("TestStatus", BindingFlags.Instance | BindingFlags.NonPublic);
-                  MethodInfo getter = pInfo.GetGetMethod(nonPublic: true);
-                  object TestResult = getter.Invoke(ScenarioContext.Current, null);
+            //to check if we missed to implement steps inside method
+            string resultOfImplementation = scenarioContext.ScenarioExecutionStatus.ToString();
 
-                  if (ScenarioContext.Current.TestError == null)
-                  {
-                      if (stepType == "Given")
-                          scenario.CreateNode<Given>(ScenarioStepContext.Current.StepInfo.Text);
-                      else if (stepType == "When")
-                          scenario.CreateNode<When>(ScenarioStepContext.Current.StepInfo.Text);
-                      else if (stepType == "Then")
-                          scenario.CreateNode<Then>(ScenarioStepContext.Current.StepInfo.Text);
-                      else if (stepType == "And")
-                          scenario.CreateNode<And>(ScenarioStepContext.Current.StepInfo.Text);
-                  }
-                  else if (ScenarioContext.Current.TestError != null)
-                  {
-                      if (stepType == "Given")
-                          scenario.CreateNode<Given>(ScenarioStepContext.Current.StepInfo.Text).Fail(ScenarioContext.Current.TestError.InnerException);
-                      else if (stepType == "When")
-                          scenario.CreateNode<When>(ScenarioStepContext.Current.StepInfo.Text).Fail(ScenarioContext.Current.TestError.InnerException);
-                      else if (stepType == "Then")
-                          scenario.CreateNode<Then>(ScenarioStepContext.Current.StepInfo.Text).Fail(ScenarioContext.Current.TestError.Message);
-                  }
 
-                  //Pending Status
-                  if (TestResult.ToString() == "StepDefinitionPending")
-                  {
-                      if (stepType == "Given")
-                          scenario.CreateNode<Given>(ScenarioStepContext.Current.StepInfo.Text).Skip("Step Definition Pending");
-                      else if (stepType == "When")
-                          scenario.CreateNode<When>(ScenarioStepContext.Current.StepInfo.Text).Skip("Step Definition Pending");
-                      else if (stepType == "Then")
-                          scenario.CreateNode<Then>(ScenarioStepContext.Current.StepInfo.Text).Skip("Step Definition Pending");
+            if (scenarioContext.TestError == null && resultOfImplementation == "OK")
+            {
+                if (stepType == "Given")
+                    _scenario.CreateNode<Given>(stepInfo);
+                else if (stepType == "When")
+                    _scenario.CreateNode<When>(stepInfo);
+                else if (stepType == "Then")
+                    _scenario.CreateNode<Then>(stepInfo);
+                else if (stepType == "And")
+                    _scenario.CreateNode<And>(stepInfo);
+                else if (stepType == "But")
+                    _scenario.CreateNode<And>(stepInfo);
+            }
+            else if (scenarioContext.TestError != null)
+            {
+                Exception? innerException = scenarioContext.TestError.InnerException;
+                string? testError = scenarioContext.TestError.Message;
 
-                  }
-        */
+                if (stepType == "Given")
+                    _scenario.CreateNode<Given>(stepInfo).Fail(innerException, MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64ImageType).Build());
+                else if (stepType == "When")
+                    _scenario.CreateNode<When>(stepInfo).Fail(innerException, MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64ImageType).Build());
+                else if (stepType == "Then")
+                    _scenario.CreateNode<Then>(stepInfo).Fail(testError, MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64ImageType).Build());
+                else if (stepType == "And")
+                    _scenario.CreateNode<Then>(stepInfo).Fail(testError, MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64ImageType).Build());
+                else if (stepType == "But")
+                    _scenario.CreateNode<Then>(stepInfo).Fail(testError, MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64ImageType).Build());
 
+            }
+            else if (resultOfImplementation == "StepDefinitionPending")
+            {
+                string errorMessage = "Step Definition is not implemented!";
+
+                if (stepType == "Given")
+                    _scenario.CreateNode<Given>(stepInfo).Fail(errorMessage, MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64ImageType).Build());
+                else if (stepType == "When")
+                    _scenario.CreateNode<When>(stepInfo).Fail(errorMessage, MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64ImageType).Build());
+                else if (stepType == "Then")
+                    _scenario.CreateNode<Then>(stepInfo).Fail(errorMessage, MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64ImageType).Build());
+                else if (stepType == "But")
+                    _scenario.CreateNode<Then>(stepInfo).Fail(errorMessage, MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64ImageType).Build());
+
+            }
+
+        }
     }
     }
 
