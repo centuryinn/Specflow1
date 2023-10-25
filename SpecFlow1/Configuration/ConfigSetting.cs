@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SpecFlow1
+namespace SpecFlow1.Configuration
 {
     class ConfigSetting
     {

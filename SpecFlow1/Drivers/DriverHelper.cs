@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SpecFlow1
+namespace SpecFlow1.Drivers
 {
     public class DriverHelper
     {
