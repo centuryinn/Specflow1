@@ -20,6 +20,8 @@ using OpenQA.Selenium.IE;
 using System.Configuration;
 using RazorEngine.Configuration;
 using Microsoft.Extensions.Configuration;
+using SpecFlow1.Configuration;
+using SpecFlow1.Drivers;
 
 namespace SpecFlow1.Hooks
 {
@@ -35,13 +37,13 @@ namespace SpecFlow1.Hooks
         private static ExtentTest _scenario;
 
         public static String dir = AppDomain.CurrentDomain.BaseDirectory;
-        public static String testResultPath = dir.Replace("bin\\Debug\\net6.0", "YugTestResults");
+        public static String testResultPath = dir.Replace("bin\\Debug\\net6.0", "TestResults");
         private static readonly string base64ImageType = "base64";
         static string configReportPath = @$"D:\yug\ExtentReport.html";
         //private string _browser = ConfigurationManager.AppSettings["Browser"];
         private string _browser = "Chrome";
         static ConfigSetting config;
-        static string configsettingpath = System.IO.Directory.GetParent(@"../../../").FullName + Path.DirectorySeparatorChar + "configsetting.json";
+        static string configsettingpath = System.IO.Directory.GetParent(@"../../../").FullName + Path.DirectorySeparatorChar + "Configuration/configsetting.json";
 
         public Hooks1(DriverHelper driverHelper) => _driverHelper = driverHelper;
 
