@@ -16,6 +16,8 @@ using WebDriverManager;
 using WebDriverManager.DriverConfigs.Impl;
 using TechTalk.SpecFlow;
 using System.Collections.Concurrent;
+using OpenQA.Selenium.IE;
+using System.Configuration;
 
 namespace SpecFlow1.Hooks
 {
@@ -34,6 +36,8 @@ namespace SpecFlow1.Hooks
         public static String testResultPath = dir.Replace("bin\\Debug\\net6.0", "YugTestResults");
         private static readonly string base64ImageType = "base64";
         static string configReportPath = @$"D:\yug\ExtentReport.html";
+        //private string _browser = ConfigurationManager.AppSettings["Browser"];
+        private string _browser = "Edge";
 
         public Hooks1(DriverHelper driverHelper) => _driverHelper = driverHelper;
 
@@ -50,7 +54,7 @@ namespace SpecFlow1.Hooks
 
             _extentReports = new ExtentReports();
             _extentReports.AttachReporter(htmlReporter);
-                       
+
         }
 
         [BeforeFeature]
@@ -63,20 +67,44 @@ namespace SpecFlow1.Hooks
         [BeforeScenario]
         public void InitializeBrowser(FeatureContext featureContext, ScenarioContext scenarioContext)
         {
-            OpenQA.Selenium.Chrome.ChromeOptions options = new OpenQA.Selenium.Chrome.ChromeOptions();
-            //options.AddArgument("--headless");
-            new DriverManager().SetUpDriver(new ChromeConfig());
-            Console.WriteLine("Setup");
-            _driverHelper.Driver = new ChromeDriver(options);
-            //Using TestProject OpenSDK replacing the existing WebDriverManager
-            //Note: Here the Token is taken from the .runsettings file
-            //_driverHelper.Driver = new FirefoxDriver();
             string InBSName = featureContext.FeatureInfo.Title;
-            if (FeatureDictionary.ContainsKey(InBSName))
-            {
-                _scenario = FeatureDictionary[InBSName].CreateNode<Scenario>(scenarioContext.ScenarioInfo.Title);
+
+            switch (_browser) {
+                case "Firefox":
+                    _driverHelper.Driver = new FirefoxDriver();
+                    if (FeatureDictionary.ContainsKey(InBSName))
+                    {
+                        _scenario = FeatureDictionary[InBSName].CreateNode<Scenario>(scenarioContext.ScenarioInfo.Title);
+                    }
+                    break;
+                case "Chrome":
+                    ChromeOptions option = new ChromeOptions();
+                    //option.AddArgument("--headless");
+                    new DriverManager().SetUpDriver(new ChromeConfig());
+                    _driverHelper.Driver = new ChromeDriver(option);
+
+                    if (FeatureDictionary.ContainsKey(InBSName))
+                    {
+                        _scenario = FeatureDictionary[InBSName].CreateNode<Scenario>(scenarioContext.ScenarioInfo.Title);
+                    }
+                    break;
+                case "Edge":
+                    InternetExplorerOptions options = new InternetExplorerOptions();
+                    options.IntroduceInstabilityByIgnoringProtectedModeSettings = true;
+                    //options.EnsureCleanSession = true;
+                    //options.ElementScrollBehavior = InternetExplorerElementScrollBehavior.Bottom;
+                    _driverHelper.Driver = new InternetExplorerDriver(options);
+
+                    if (FeatureDictionary.ContainsKey(InBSName))
+                    {
+                        _scenario = FeatureDictionary[InBSName].CreateNode<Scenario>(scenarioContext.ScenarioInfo.Title);
+                    }
+                    break;
+                default:
+                    break;
             }
         }
+    
 
         [AfterScenario]
         public void AfterScenario(ScenarioContext scenarioContext)
