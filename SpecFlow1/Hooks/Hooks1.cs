@@ -18,6 +18,8 @@ using TechTalk.SpecFlow;
 using System.Collections.Concurrent;
 using OpenQA.Selenium.IE;
 using System.Configuration;
+using RazorEngine.Configuration;
+using Microsoft.Extensions.Configuration;
 
 namespace SpecFlow1.Hooks
 {
@@ -37,7 +39,9 @@ namespace SpecFlow1.Hooks
         private static readonly string base64ImageType = "base64";
         static string configReportPath = @$"D:\yug\ExtentReport.html";
         //private string _browser = ConfigurationManager.AppSettings["Browser"];
-        private string _browser = "Edge";
+        private string _browser = "Chrome";
+        static ConfigSetting config;
+        static string configsettingpath = System.IO.Directory.GetParent(@"../../../").FullName + Path.DirectorySeparatorChar + "configsetting.json";
 
         public Hooks1(DriverHelper driverHelper) => _driverHelper = driverHelper;
 
@@ -67,9 +71,15 @@ namespace SpecFlow1.Hooks
         [BeforeScenario]
         public void InitializeBrowser(FeatureContext featureContext, ScenarioContext scenarioContext)
         {
+            config = new ConfigSetting();
+            ConfigurationBuilder builder = new ConfigurationBuilder();
+            builder.AddJsonFile(configsettingpath);
+            IConfigurationRoot configuration = builder.Build();
+            configuration.Bind(config);
+
             string InBSName = featureContext.FeatureInfo.Title;
 
-            switch (_browser) {
+            switch (config.BrowserType) {
                 case "Firefox":
                     _driverHelper.Driver = new FirefoxDriver();
                     if (FeatureDictionary.ContainsKey(InBSName))
@@ -104,7 +114,7 @@ namespace SpecFlow1.Hooks
                     break;
             }
         }
-    
+        
 
         [AfterScenario]
         public void AfterScenario(ScenarioContext scenarioContext)
