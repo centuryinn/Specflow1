@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SpecFlow1.Helper;
 
 namespace SpecFlow1.Pages
 {
     public class LoginPage
     {
         private IWebDriver _driver;
+        private static readonly Log logger = new Log(typeof(LoginPage));
 
         public LoginPage(IWebDriver driver)
         {
@@ -37,6 +39,7 @@ namespace SpecFlow1.Pages
         {
             Thread.Sleep(5000);
             btnContact.Click();
+            logger.Debug("Click Contact button");
         }
     }
 }
