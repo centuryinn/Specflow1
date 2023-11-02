@@ -22,7 +22,6 @@ using RazorEngine.Configuration;
 using Microsoft.Extensions.Configuration;
 using SpecFlow1.Configuration;
 using SpecFlow1.Drivers;
-using SpecFlow1.Helper;
 
 namespace SpecFlow1.Hooks
 {
@@ -36,7 +35,6 @@ namespace SpecFlow1.Hooks
         private static ExtentTest _feature;
         [ThreadStatic]
         private static ExtentTest _scenario;
-        private static readonly Log logger = new Log(typeof(Hooks1));
 
         public static String dir = AppDomain.CurrentDomain.BaseDirectory;
         public static String testResultPath = dir.Replace("bin\\Debug\\net6.0", "TestResults");
@@ -90,7 +88,6 @@ namespace SpecFlow1.Hooks
                     {
                         _scenario = FeatureDictionary[InBSName].CreateNode<Scenario>(scenarioContext.ScenarioInfo.Title);
                     }
-                    logger.Info("Opening Firefox");
                     break;
                 case "Chrome":
                     ChromeOptions option = new ChromeOptions();
@@ -102,7 +99,6 @@ namespace SpecFlow1.Hooks
                     {
                         _scenario = FeatureDictionary[InBSName].CreateNode<Scenario>(scenarioContext.ScenarioInfo.Title);
                     }
-                    logger.Info("Opening Chrome");
                     break;
                 case "Edge":
                     InternetExplorerOptions options = new InternetExplorerOptions();
@@ -115,7 +111,6 @@ namespace SpecFlow1.Hooks
                     {
                         _scenario = FeatureDictionary[InBSName].CreateNode<Scenario>(scenarioContext.ScenarioInfo.Title);
                     }
-                    logger.Info("Opening Edge");
                     break;
                 default:
                     break;
