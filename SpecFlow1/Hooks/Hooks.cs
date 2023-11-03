@@ -79,7 +79,7 @@ namespace SpecFlow1.Hooks
             ConfigurationBuilder builder = new ConfigurationBuilder();
             builder.AddJsonFile(configsettingpath);
             IConfigurationRoot configuration = builder.Build();
-            configuration.Bind(config);
+            configuration.Bind(config);           
 
             string InBSName = featureContext.FeatureInfo.Title;
 

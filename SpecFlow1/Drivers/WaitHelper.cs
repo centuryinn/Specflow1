@@ -34,6 +34,6 @@ namespace SpecFlow1.Drivers
             Func<IWebDriver, bool> condition)
         {
             Wait(driver, ignoreExceptions, timeoutInMilliSecs).Until(condition);
-        }
+        }     
     }
 }
