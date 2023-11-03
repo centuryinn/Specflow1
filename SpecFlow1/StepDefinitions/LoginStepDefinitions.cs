@@ -26,6 +26,7 @@ namespace SpecFlow1.StepDefinitions
         [Given(@"I navigate to application")]
         public void GivenINavigateToApplication()
         {
+            _driverHelper.Driver.Manage().Cookies.DeleteAllCookies();
             _driverHelper.Driver.Navigate().GoToUrl("https://centuryinnovations.uk/");
         }
 
