@@ -8,18 +8,20 @@ using TechTalk.SpecFlow.Assist;
 namespace SpecFlow1.StepDefinitions
 {
     [Binding]
-    public class LoginSteps
+    public class LoginStepDefinitions
     {
 
         private DriverHelper _driverHelper;
         HomePage homePage;
         LoginPage loginPage;
+        WaitHelper waitHelper;
 
-        public LoginSteps(DriverHelper driverHelper)
+        public LoginStepDefinitions(DriverHelper driverHelper)
         {
             _driverHelper = driverHelper;
             homePage = new HomePage(_driverHelper.Driver);
             loginPage = new LoginPage(_driverHelper.Driver);
+            waitHelper = new WaitHelper(_driverHelper.Driver);
         }
         [Given(@"I navigate to application")]
         public void GivenINavigateToApplication()
@@ -31,12 +33,14 @@ namespace SpecFlow1.StepDefinitions
         public void WhenIClickOnCONTACTUSLink()
         {
             homePage.ClickContactUs();
+            waitHelper.WaitUntil(_driverHelper, 20000, x => _driverHelper.Driver.Url.Contains("centuryinnovations.uk"));
         }
 
         [Then(@"I should see Contact Us page")]
         public void ThenIShouldSeeContactUsPage()
         {
             Assert.That(loginPage.IsContactUsExist(), Is.True, "Contact Us Page is displayed");
+            
         }
 
         [Then(@"I click on CONTACT link")]
