@@ -22,11 +22,13 @@ using RazorEngine.Configuration;
 using Microsoft.Extensions.Configuration;
 using SpecFlow1.Configuration;
 using SpecFlow1.Drivers;
+using NUnit.Framework;
+[assembly: Parallelizable(ParallelScope.Fixtures)]
 
 namespace SpecFlow1.Hooks
 {
     [Binding]
-    public sealed class Hooks1
+    public sealed class Hooks
     {
         private DriverHelper _driverHelper;
 
@@ -45,7 +47,7 @@ namespace SpecFlow1.Hooks
         static ConfigSetting config;
         static string configsettingpath = System.IO.Directory.GetParent(@"../../../").FullName + Path.DirectorySeparatorChar + "Configuration/configsetting.json";
 
-        public Hooks1(DriverHelper driverHelper) => _driverHelper = driverHelper;
+        public Hooks(DriverHelper driverHelper) => _driverHelper = driverHelper;
 
         public static ConcurrentDictionary<string, ExtentTest> FeatureDictionary = new ConcurrentDictionary<string, ExtentTest>();
 

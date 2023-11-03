@@ -98,6 +98,9 @@ this.ScenarioInitialize(scenarioInfo);
 #line 6
  testRunner.When("I click on CONTACT US link", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
+#line 7
+ testRunner.Then("I should see Contact Us page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
             }
             this.ScenarioCleanup();
         }

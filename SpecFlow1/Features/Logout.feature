@@ -3,8 +3,8 @@
 @mytag
 Scenario: Logout
 	Given I navigate to application
-	When I click on CONTACT US link
-#	Then I should see Contact Us page
+	When I click on Consulting link
+#	Then I should see Consulting page
 #	And I click on CONTACT link
 #	And I enter details <Name> and <Email>
 #Examples:
