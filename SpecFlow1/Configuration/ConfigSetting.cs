@@ -16,5 +16,6 @@ namespace SpecFlow1.Configuration
         public string Email { get; set; }
         public string Password { get; set; }
         public string Environment { get; set; }
+        public string ApiBaseURL { get; set; }
     }
 }
