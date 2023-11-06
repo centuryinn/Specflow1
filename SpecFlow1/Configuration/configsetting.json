@@ -9,5 +9,6 @@
   "WebDriverTimeout": "00:00:30",
   "FileUploadPath": "C:\\FileUpload\\FileUpload1.txt",
   "ConfigReportPath": "\\ExtentReports\\AutomationTestReport.html",
-  "Environment": "dev"
+  "Environment": "dev",
+  "ApiBaseURL": "https://reqres.in"
 }

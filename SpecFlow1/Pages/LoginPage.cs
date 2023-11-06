@@ -64,7 +64,7 @@ namespace SpecFlow1.Pages
             _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
             customControl.FileUpload(txtMsg, filePath);           
             _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
-            Thread.Sleep(10000);
+            Thread.Sleep(1000);
         }
     }
 }

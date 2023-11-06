@@ -47,7 +47,7 @@ namespace SpecFlow1.Hooks
         public static ConcurrentDictionary<string, ExtentTest> FeatureDictionary = new ConcurrentDictionary<string, ExtentTest>();
 
         [BeforeTestRun]
-        public static void InitializeReport()
+        public static void Setup()
         {
             ConfigSetting config = new ConfigSetting();
             ConfigurationBuilder builder = new ConfigurationBuilder();
@@ -61,6 +61,9 @@ namespace SpecFlow1.Hooks
 
             _extentReports = new ExtentReports();
             _extentReports.AttachReporter(htmlReporter);
+            APIHelper.baseURL = config.ApiBaseURL;
+
+            RestSharpManager.InitializeEndpoint(APIHelper.baseURL);
 
         }
 
@@ -130,6 +133,7 @@ namespace SpecFlow1.Hooks
                 // Log.StepNotDefined();
             }
             _driverHelper.Driver.Quit();
+            RestSharpManager.ClearRequest();
         }
 
         [AfterTestRun]
