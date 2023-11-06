@@ -1,11 +1,13 @@
 {
   "BrowserType": "Chrome",
   "ApplicationUrl": "https://centuryinnovations.uk",
-  "UserName": "yug.kasala@q-solution.uk",
+  "UserName": "Yug",
+  "Email": "info@myemail.com",
   "Password": "password",
   "DatabaseConnectionString": "DefaultEndpointsProtocol=https;AccountName=qSoltestDBdev;AccountKey=Maj7i/vzm3p/waF8pDQ==;EndpointSuffix=core.windows.net",
   "EnableHeadlessBrowserMode": "false",
   "WebDriverTimeout": "00:00:30",
-  "FileUploadPath": "00:00:30",
-  "ConfigReportPath": "00:00:30"
+  "FileUploadPath": "C:\\FileUpload\\FileUpload1.txt",
+  "ConfigReportPath": "\\ExtentReports\\AutomationTestReport.html",
+  "Environment": "dev"
 }

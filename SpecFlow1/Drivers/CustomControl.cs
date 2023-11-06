@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using SpecFlow1.Configuration;
 
 namespace SpecFlow1.Drivers
 {
@@ -16,6 +18,11 @@ namespace SpecFlow1.Drivers
         {
             _driver = driver;
         }
+
+        ConfigurationBuilder builder;
+        ConfigSetting config;
+        static string configsettingpath = System.IO.Directory.GetParent(@"../../../").FullName + Path.DirectorySeparatorChar + "Configuration/configsetting.json";
+
         public void EnterText(IWebElement webElement, string value) => webElement.SendKeys(value);
 
         public void Click(IWebElement webElement) => webElement.Click();
@@ -34,8 +41,12 @@ namespace SpecFlow1.Drivers
 
         public void FileUpload(IWebElement webElement, string fileUploadPath)
         {
-            webElement.SendKeys(fileUploadPath);
+            config = new ConfigSetting();
+            ConfigurationBuilder builder = new ConfigurationBuilder();
+            builder.AddJsonFile(configsettingpath);
+            IConfigurationRoot configuration = builder.Build();
+            configuration.Bind(config);
+            webElement.SendKeys(config.FileUploadPath);
         }
-
     }
 }

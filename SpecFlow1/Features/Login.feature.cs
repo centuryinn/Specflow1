@@ -115,6 +115,9 @@ this.ScenarioInitialize(scenarioInfo);
 #line 9
  testRunner.And(string.Format("I enter details {0} and {1}", name, email), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
+#line 10
+ testRunner.And("I upload policy file \"FileUpload1\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
             }
             this.ScenarioCleanup();
         }

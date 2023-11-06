@@ -1,6 +1,7 @@
-﻿using OpenQA.Selenium;
+﻿using Microsoft.Extensions.Configuration;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
-
+using SpecFlow1.Configuration;
 using SpecFlow1.Drivers;
 using System;
 using System.Collections.Generic;
@@ -20,20 +21,30 @@ namespace SpecFlow1.Pages
             _driver = driver;
             customControl = new CustomControl(_driver);
         }
+        ConfigurationBuilder builder;
+        ConfigSetting config;
+        static string configsettingpath = System.IO.Directory.GetParent(@"../../../").FullName + Path.DirectorySeparatorChar + "Configuration/configsetting.json";
+
 
         IWebElement txtName => _driver.FindElement(By.CssSelector("input[data-aid=CONTACT_FORM_NAME]"));
         IWebElement txtEmail => _driver.FindElement(By.CssSelector("input[data-aid=CONTACT_FORM_EMAIL]"));
+        IWebElement txtMsg => _driver.FindElement(By.CssSelector("textarea[data-aid=CONTACT_FORM_MESSAGE]"));
         IWebElement lnkContactUs => _driver.FindElement(By.LinkText("CONTACT US"));
         IWebElement btnContact => _driver.FindElement(By.XPath("//*[@id=\"bs-4\"]/span/div/div[2]/div/div[2]/button"));
 
 
         public void EnterNameAndEmail(string name, string email)
         {
+            config = new ConfigSetting();
+            ConfigurationBuilder builder = new ConfigurationBuilder();
+            builder.AddJsonFile(configsettingpath);
+            IConfigurationRoot configuration = builder.Build();
+            configuration.Bind(config);
             _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
-            customControl.EnterText(txtName, name);
+            customControl.EnterText(txtName, config.UserName);
             //txtName.SendKeys(name);
             _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
-            customControl.EnterText(txtEmail, email);
+            customControl.EnterText(txtEmail, config.Email);
             //txtEmail.SendKeys(email);
             _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
         }
@@ -45,6 +56,15 @@ namespace SpecFlow1.Pages
             _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
             btnContact.Click();
             _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+        }
+
+        public void UploadPolicyFile(string filePath)
+        {
+            txtMsg.Click();
+            _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+            customControl.FileUpload(txtMsg, filePath);           
+            _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+            Thread.Sleep(10000);
         }
     }
 }
