@@ -1,3 +1,11 @@
 {
-  "BrowserType" :  "Chrome"
+  "BrowserType": "Chrome",
+  "ApplicationUrl": "https://centuryinnovations.uk",
+  "UserName": "yug.kasala@q-solution.uk",
+  "Password": "password",
+  "DatabaseConnectionString": "DefaultEndpointsProtocol=https;AccountName=qSoltestDBdev;AccountKey=Maj7i/vzm3p/waF8pDQ==;EndpointSuffix=core.windows.net",
+  "EnableHeadlessBrowserMode": "false",
+  "WebDriverTimeout": "00:00:30",
+  "FileUploadPath": "00:00:30",
+  "ConfigReportPath": "00:00:30"
 }

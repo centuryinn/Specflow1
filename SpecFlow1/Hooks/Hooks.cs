@@ -23,7 +23,7 @@ using Microsoft.Extensions.Configuration;
 using SpecFlow1.Configuration;
 using SpecFlow1.Drivers;
 using NUnit.Framework;
-[assembly: Parallelizable(ParallelScope.Fixtures)]
+//[assembly: Parallelizable(ParallelScope.Fixtures)]
 
 namespace SpecFlow1.Hooks
 {
@@ -41,9 +41,7 @@ namespace SpecFlow1.Hooks
         public static String dir = AppDomain.CurrentDomain.BaseDirectory;
         public static String testResultPath = dir.Replace("bin\\Debug\\net6.0", "TestResults");
         private static readonly string base64ImageType = "base64";
-        static string configReportPath = @$"D:\yug\ExtentReport.html";
-        //private string _browser = ConfigurationManager.AppSettings["Browser"];
-        private string _browser = "Chrome";
+        static string configReportPath = @$"C:\Vanitha\ExtentReport.html";
         static ConfigSetting config;
         static string configsettingpath = System.IO.Directory.GetParent(@"../../../").FullName + Path.DirectorySeparatorChar + "Configuration/configsetting.json";
 

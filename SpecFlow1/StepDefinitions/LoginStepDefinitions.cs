@@ -1,4 +1,6 @@
+using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
+using SpecFlow1.Configuration;
 using SpecFlow1.Drivers;
 using SpecFlow1.Pages;
 using System;
@@ -16,73 +18,59 @@ namespace SpecFlow1.StepDefinitions
         LoginPage loginPage;
         WaitHelper waitHelper;
 
+        ConfigurationBuilder builder;
+        ConfigSetting config;
+        static string configsettingpath = System.IO.Directory.GetParent(@"../../../").FullName + Path.DirectorySeparatorChar + "Configuration/configsetting.json";
+
+
         public LoginStepDefinitions(DriverHelper driverHelper)
         {
             _driverHelper = driverHelper;
             homePage = new HomePage(_driverHelper.Driver);
             loginPage = new LoginPage(_driverHelper.Driver);
             waitHelper = new WaitHelper(_driverHelper.Driver);
+            
         }
         [Given(@"I navigate to application")]
         public void GivenINavigateToApplication()
         {
+            config = new ConfigSetting();
+            ConfigurationBuilder builder = new ConfigurationBuilder();
+            builder.AddJsonFile(configsettingpath);
+            IConfigurationRoot configuration = builder.Build();
+            configuration.Bind(config);
+
             _driverHelper.Driver.Manage().Cookies.DeleteAllCookies();
-            _driverHelper.Driver.Navigate().GoToUrl("https://centuryinnovations.uk/");
+            _driverHelper.Driver.Navigate().GoToUrl(config.ApplicationUrl);
+            _driverHelper.Driver.Manage().Window.Maximize();
         }
 
         [When(@"I click on CONTACT US link")]
         public void WhenIClickOnCONTACTUSLink()
         {
             homePage.ClickContactUs();
-            waitHelper.WaitUntil(_driverHelper, 20000, x => _driverHelper.Driver.Url.Contains("centuryinnovations.uk"));
+            waitHelper.WaitUntil(_driverHelper, 1000, x => _driverHelper.Driver.Url.Contains("contact-us"));
         }
 
         [Then(@"I should see Contact Us page")]
         public void ThenIShouldSeeContactUsPage()
         {
             Assert.That(loginPage.IsContactUsExist(), Is.True, "Contact Us Page is displayed");
-            
+            waitHelper.WaitUntil(_driverHelper, 500, x => _driverHelper.Driver.Url.Contains("contact-us"));
         }
 
         [Then(@"I click on CONTACT link")]
         public void ThenIClickOnCONTACTLink()
         {
-            loginPage.ClickContact();
+            waitHelper.ScrollToBottom();
+            loginPage.ClickContact();            
         }
-
-        //[Then(@"I enter Name and Email")]
-        //public void ThenIEnterNameAndEmail(Table table)
-        //{
-        //    var details = table.CreateSet<EmployeeDetails>();
-        //    foreach (EmployeeDetails emp in details)
-        //    {
-        //        loginPage.EnterNameAndEmail(emp.Name, emp.Email);
-        //    }
-
-        //}
 
         [Then(@"I enter details (.*) and (.*)")]
         public void ThenIEnterDetailsNameAndEmail(String name, String email)
         {
-            loginPage.EnterNameAndEmail(name, email);
-           
-
-            //List<EmployeeDetails> empDetails = new List<EmployeeDetails>();
-            //{
-            //    new EmployeeDetails()
-            //    {
-            //        Name = name,
-            //        Email = email
-            //    };
-            //    ScenarioContext.Current.Add("EmpDetails", empDetails);
-            //    var emplist = ScenarioContext.Current.Get<IEnumerable<EmployeeDetails>>("EmpDetails");
-                
-            //    foreach (EmployeeDetails emp in emplist) 
-            //    {
-            //        loginPage.EnterNameAndEmail(emp.Name, emp.Email);
-            //    }
-            //}
-
+            waitHelper.WaitUntil(_driverHelper, 500, x => _driverHelper.Driver.Url.Contains("centuryinnovations.uk"));
+            loginPage.EnterNameAndEmail(name, email);           
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿Feature: Logout
+﻿#@ignore
+Feature: Logout
 
-@mytag
 Scenario: Logout
 	Given I navigate to application
 	When I click on Consulting link

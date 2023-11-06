@@ -9,5 +9,6 @@ namespace SpecFlow1.Configuration
     class ConfigSetting
     {
         public string BrowserType { get; set; }
+        public string ApplicationUrl { get; set; }
     }
 }
