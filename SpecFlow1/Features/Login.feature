@@ -7,6 +7,7 @@ Scenario: Login
 	Then I should see Contact Us page
 	And I click on CONTACT link
 	And I enter details <Name> and <Email>
+	And I upload policy file "FileUpload1"
 Examples:
 	| Name | Email          |
 	| Yug  | yug@gmail.com  |

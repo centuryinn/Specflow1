@@ -72,5 +72,11 @@ namespace SpecFlow1.StepDefinitions
             waitHelper.WaitUntil(_driverHelper, 500, x => _driverHelper.Driver.Url.Contains("centuryinnovations.uk"));
             loginPage.EnterNameAndEmail(name, email);           
         }
+
+        [Then(@"I upload policy file (.*)")]
+        public void ThenIUploadPolicyFile(string filePath)
+        {
+            loginPage.UploadPolicyFile(filePath);
+        }
     }
 }

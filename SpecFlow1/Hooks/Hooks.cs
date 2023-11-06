@@ -31,7 +31,6 @@ namespace SpecFlow1.Hooks
     public sealed class Hooks
     {
         private DriverHelper _driverHelper;
-
         private static ExtentReports _extentReports;
         [ThreadStatic]
         private static ExtentTest _feature;
@@ -41,21 +40,23 @@ namespace SpecFlow1.Hooks
         public static String dir = AppDomain.CurrentDomain.BaseDirectory;
         public static String testResultPath = dir.Replace("bin\\Debug\\net6.0", "TestResults");
         private static readonly string base64ImageType = "base64";
-        static string configReportPath = @$"C:\Vanitha\ExtentReport.html";
-        static ConfigSetting config;
+        ConfigurationBuilder builder;
+        ConfigSetting config;
         static string configsettingpath = System.IO.Directory.GetParent(@"../../../").FullName + Path.DirectorySeparatorChar + "Configuration/configsetting.json";
-
         public Hooks(DriverHelper driverHelper) => _driverHelper = driverHelper;
-
         public static ConcurrentDictionary<string, ExtentTest> FeatureDictionary = new ConcurrentDictionary<string, ExtentTest>();
 
         [BeforeTestRun]
         public static void InitializeReport()
         {
-            //var htmlReporter = new ExtentSparkReporter(testResultPath);
-            var htmlReporter = new ExtentSparkReporter(configReportPath);
+            ConfigSetting config = new ConfigSetting();
+            ConfigurationBuilder builder = new ConfigurationBuilder();
+            builder.AddJsonFile(configsettingpath);
+            IConfigurationRoot configuration = builder.Build();
+            configuration.Bind(config);
+            var htmlReporter = new ExtentSparkReporter(testResultPath + config.ConfigReportPath);
             htmlReporter.Config.ReportName = "Automation Test Report";
-            htmlReporter.Config.DocumentTitle = "Automation Test Report";
+            htmlReporter.Config.DocumentTitle = "SpecFlow Acceptance Tests";
             htmlReporter.Config.Theme = Theme.Dark;
 
             _extentReports = new ExtentReports();
@@ -77,11 +78,12 @@ namespace SpecFlow1.Hooks
             ConfigurationBuilder builder = new ConfigurationBuilder();
             builder.AddJsonFile(configsettingpath);
             IConfigurationRoot configuration = builder.Build();
-            configuration.Bind(config);           
+            configuration.Bind(config);
 
             string InBSName = featureContext.FeatureInfo.Title;
 
-            switch (config.BrowserType) {
+            switch (config.BrowserType)
+            {
                 case "Firefox":
                     _driverHelper.Driver = new FirefoxDriver();
                     if (FeatureDictionary.ContainsKey(InBSName))
@@ -116,7 +118,6 @@ namespace SpecFlow1.Hooks
                     break;
             }
         }
-        
 
         [AfterScenario]
         public void AfterScenario(ScenarioContext scenarioContext)
@@ -143,12 +144,8 @@ namespace SpecFlow1.Hooks
         {
             string stepType = scenarioContext.StepContext.StepInfo.StepDefinitionType.ToString();
             string stepInfo = scenarioContext.StepContext.StepInfo.Text;
-
-
             //to check if we missed to implement steps inside method
             string resultOfImplementation = scenarioContext.ScenarioExecutionStatus.ToString();
-
-
             if (scenarioContext.TestError == null && resultOfImplementation == "OK")
             {
                 if (stepType == "Given")
@@ -193,8 +190,7 @@ namespace SpecFlow1.Hooks
                     _scenario.CreateNode<Then>(stepInfo).Fail(errorMessage, MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64ImageType).Build());
 
             }
-
         }
     }
-    }
+}
 
