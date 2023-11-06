@@ -28,14 +28,14 @@ namespace SpecFlow1.StepDefinitions
         public void WhenIClickOnConsultingLink()
         {
             consultingPage.ClickConsulting();
-            waitHelper.WaitUntil(_driverHelper, 30000, x => _driverHelper.Driver.Url.Contains("centuryinnovations.uk"));
+            waitHelper.WaitUntil(_driverHelper, 500, x => _driverHelper.Driver.Url.Contains("centuryinnovations.uk"));
         }
 
         [Then(@"I should see Consulting page")]
         public void ThenIShouldSeeConsultingPage()
         {
             Assert.That(consultingPage.IsConsultingExist(), Is.True, "Consulting Page is displayed");
-            waitHelper.WaitUntil(_driverHelper, 10000, x => _driverHelper.Driver.Url.Contains("centuryinnovations.uk"));
+            waitHelper.WaitUntil(_driverHelper, 500, x => _driverHelper.Driver.Url.Contains("centuryinnovations.uk"));
         }
     }
 }

@@ -5,12 +5,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SpecFlow1.Drivers
 {
     public class WaitHelper
     {
-        private static int defaultTimeoutMillisecs = 20000;
+        private static int defaultTimeoutMillisecs = 10000;
         private IWebDriver _driver;
         public WaitHelper(IWebDriver driver)
         {
@@ -34,6 +35,12 @@ namespace SpecFlow1.Drivers
             Func<IWebDriver, bool> condition)
         {
             Wait(driver, ignoreExceptions, timeoutInMilliSecs).Until(condition);
-        }     
+        }
+
+        public void ScrollToBottom()
+        {
+            IJavaScriptExecutor js = (IJavaScriptExecutor)_driver;
+            js.ExecuteScript("window.scrollTo(0, document.body.scrollHeight)");
+        }
     }
 }
