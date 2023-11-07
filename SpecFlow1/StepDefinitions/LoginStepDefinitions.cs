@@ -1,11 +1,19 @@
 using Microsoft.Extensions.Configuration;
+using NuGet.Frameworks;
 using NUnit.Framework;
 using SpecFlow1.Configuration;
 using SpecFlow1.Drivers;
 using SpecFlow1.Pages;
 using System;
+using System.Net;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
+using RestSharp;
+using AventStack.ExtentReports.Model;
+using RestSharp.Serializers;
+using System.Collections.Generic;
+using SpecFlow.Internal.Json;
+using Newtonsoft.Json.Linq;
 
 namespace SpecFlow1.StepDefinitions
 {
@@ -22,14 +30,12 @@ namespace SpecFlow1.StepDefinitions
         ConfigSetting config;
         static string configsettingpath = System.IO.Directory.GetParent(@"../../../").FullName + Path.DirectorySeparatorChar + "Configuration/configsetting.json";
 
-
         public LoginStepDefinitions(DriverHelper driverHelper)
         {
             _driverHelper = driverHelper;
             homePage = new HomePage(_driverHelper.Driver);
             loginPage = new LoginPage(_driverHelper.Driver);
-            waitHelper = new WaitHelper(_driverHelper.Driver);
-            
+            waitHelper = new WaitHelper(_driverHelper.Driver);            
         }
         [Given(@"I navigate to application")]
         public void GivenINavigateToApplication()

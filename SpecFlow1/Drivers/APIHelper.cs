@@ -14,5 +14,6 @@ namespace SpecFlow1.Drivers
         public static string endpoint = "";
         public static RestResponse response = new RestResponse();
         public static string method = "";
+        
     }
 }
