@@ -1,7 +1,12 @@
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using SpecFlow1.Configuration;
 using SpecFlow1.Drivers;
+using SpecFlow1.Pages;
 using System;
 using System.Net;
+using System.Xml.Linq;
 using TechTalk.SpecFlow;
 
 namespace SpecFlow1.StepDefinitions
@@ -10,6 +15,23 @@ namespace SpecFlow1.StepDefinitions
     [Binding]
     public class APIAutomationStepDefinitions
     {
+        private DriverHelper _driverHelper;
+        HomePage homePage;
+        LoginPage loginPage;
+        WaitHelper waitHelper;
+
+        ConfigurationBuilder builder;
+        ConfigSetting config;
+        static string configsettingpath = System.IO.Directory.GetParent(@"../../../").FullName + Path.DirectorySeparatorChar + "Configuration/configsetting.json";
+
+        public APIAutomationStepDefinitions(DriverHelper driverHelper)
+        {
+            _driverHelper = driverHelper;
+            homePage = new HomePage(_driverHelper.Driver);
+            loginPage = new LoginPage(_driverHelper.Driver);
+            waitHelper = new WaitHelper(_driverHelper.Driver);
+        }
+
         [Given(@"The test case title is '([^']*)'")]
         public void GivenTheTestCaseTitleIs(string testcase)
         { }
@@ -45,6 +67,18 @@ namespace SpecFlow1.StepDefinitions
             RestSharpManager.ExecuteRequest();
         }
 
+        [Then(@"User enters api data userName and email")]
+        public void ThenUserEntersApiDataUserNameAndEmail()
+        {
+            int actualResponseCode = (int)(HttpStatusCode)APIHelper.response.StatusCode;
+            Assert.AreEqual(actualResponseCode, 200, "Respose code is 200");
+            string content = APIHelper.response.Content;
+            dynamic userData = JObject.Parse(content);
+            string uName = userData.data.first_name.ToString();
+            string uEmail = userData.data.email.ToString();
+
+            loginPage.EnterNameAndEmail(uName, uEmail);
+        }
 
         [Then(@"User should expect '([^']*)' response code")]
         public void ThenUserShouldExpectResponseCode(int responseCode)

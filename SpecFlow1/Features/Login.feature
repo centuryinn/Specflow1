@@ -11,4 +11,4 @@ Scenario: Login
 Examples:
 	| Name | Email          |
 	| Yug  | yug@gmail.com  |
-	#| Vani | vani@gmail.com |
+	| Vani | vani@gmail.com |

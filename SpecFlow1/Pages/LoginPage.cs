@@ -41,12 +41,13 @@ namespace SpecFlow1.Pages
             IConfigurationRoot configuration = builder.Build();
             configuration.Bind(config);
             _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
-            customControl.EnterText(txtName, config.UserName);
-            //txtName.SendKeys(name);
+            customControl.EnterText(txtName, name);
+            //txtName.SendKeys(config.UserName);
             _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
-            customControl.EnterText(txtEmail, config.Email);
-            //txtEmail.SendKeys(email);
+            customControl.EnterText(txtEmail, email);
+            //txtEmail.SendKeys(config.Email);
             _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+            Thread.Sleep(1000);
         }
 
         public bool IsContactUsExist() => lnkContactUs.Displayed;
