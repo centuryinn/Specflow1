@@ -18,8 +18,9 @@ Tools and services used:
 
 ## What Is This Project
 
-SpecFlow1 is a project to build test automation project for both web and rest api's, include
-to run as part of CI/CD pipeline, from scratch. This is built with .NET 6.0 specflow selenium c# nunit with reports both extent reports and specflow livingdoc.
+SpecFlow1 is a project to build test automation for both web and rest api's, including
+to run as part of CI/CD pipeline, from scratch. 
+This is built with .NET 6.0, SpecFlow, SeleniumWebdriver, C#, RestSharp, nunit with both specflow livingdoc and Extent reports.
 
 ## The Application Under Test
 
@@ -73,7 +74,7 @@ https://github.com/demo_tbd/SpecFlow1/
 
 ### How To Access Test Report
 
-Report artifacts are generated at report Test Results folder. 
+Report artifacts are generated at Test Results folder. 
 
 ## How To Run Test On Local
 
