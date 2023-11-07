@@ -23,7 +23,7 @@ using Microsoft.Extensions.Configuration;
 using SpecFlow1.Configuration;
 using SpecFlow1.Drivers;
 using NUnit.Framework;
-//[assembly: Parallelizable(ParallelScope.Fixtures)]
+[assembly: Parallelizable(ParallelScope.Fixtures)]
 
 namespace SpecFlow1.Hooks
 {
